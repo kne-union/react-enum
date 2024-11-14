@@ -2,14 +2,22 @@
   "isFull": false,
   "list": [
     {
-      "title": "这里填写示例标题",
-      "description": "这里填写示例说明",
+      "title": "EnumLegacy",
+      "description": "兼容老版本Enum的API",
       "code": "./base.js",
       "scope": [
         {
           "name": "_ReactEnum",
           "packageName": "@kne/current-lib_react-enum",
           "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
         }
       ]
     }

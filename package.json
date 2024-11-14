@@ -82,5 +82,12 @@
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@kne/global-context": "^1.1.2",
+    "@kne/react-fetch": "^1.5.5",
+    "@kne/use-ref-callback": "^0.1.2",
+    "lodash": "^4.17.21",
+    "lru-cache": "^11.0.2"
   }
 }

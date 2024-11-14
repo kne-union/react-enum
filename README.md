@@ -28,18 +28,42 @@ npm i --save @kne/react-enum
 
 #### 示例代码
 
-- 这里填写示例标题
-- 这里填写示例说明
-- _ReactEnum(@kne/current-lib_react-enum)[import * as _ReactEnum from "@kne/react-enum"]
+- EnumLegacy
+- 兼容老版本Enum的API
+- _ReactEnum(@kne/current-lib_react-enum)[import * as _ReactEnum from "@kne/react-enum"],antd(antd),remoteLoader(@kne/remote-loader)
 
 ```jsx
-const {default:ReactEnum} = _ReactEnum;
+const { default: Enum } = _ReactEnum;
+const { createWithRemoteLoader } = remoteLoader;
+const {Divider} = antd;
 
-const BaseExample = ()=>{
-    return <div>
-        <ReactEnum />
-    </div>;
-};
+const BaseExample = createWithRemoteLoader({
+  modules: ['components-core:Global@PureGlobal']
+})(({ remoteModules }) => {
+  const [PureGlobal] = remoteModules;
+  return <PureGlobal preset={{
+    enums: {
+      gender: [{ value: 'M', description: '男' }, {
+        value: 'F', description: '女'
+      }], marital: async () => [{ description: '已婚', value: 'Y' }, {
+        description: '未婚', value: 'N'
+      }]
+    }
+  }}>
+    <Enum moduleName="gender" name="M" />
+    <Divider />
+    <Enum moduleName="gender">{(data) => {
+      return data.map((data) => `${data.value}:${data.description}`).join(',');
+    }}</Enum>
+    <Divider />
+    <Enum moduleName={['gender', 'marital']}>{([gender, marital]) => {
+      return <div>
+        <div>{gender.map((data) => `${data.value}:${data.description}`).join(',')}</div>
+        <div>{marital.map((data) => `${data.value}:${data.description}`).join(',')}</div>
+      </div>;
+    }}</Enum>
+  </PureGlobal>;
+});
 
 render(<BaseExample />);
 
