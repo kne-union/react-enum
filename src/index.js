@@ -50,9 +50,12 @@ const useEnumLoader = () => {
     const getCacheKey = request => {
       return Symbol.for(`${request.moduleName}_${request.value}_${request.format || format}`);
     };
-    const { cached, uncached } = groupBy(requests, request => {
+    const requestsGroup = groupBy(requests, request => {
       return !request.force && cache.has(getCacheKey(request)) ? 'cached' : 'uncached';
     });
+
+    const uncached = requestsGroup.uncached || [],
+      cached = requestsGroup.cached || [];
 
     const results = [];
 
@@ -67,13 +70,13 @@ const useEnumLoader = () => {
       {}
     );
 
-    (cached || []).forEach(request => {
+    cached.forEach(request => {
       const formatValue = cache.get(getCacheKey(request));
       const index = requests.indexOf(request);
       results[index] = formatValue;
     });
 
-    (uncached || []).forEach(request => {
+    uncached.forEach(request => {
       const formatValue = (request => {
         if (cache.has(getCacheKey(request))) {
           return cache.get(getCacheKey(request));
