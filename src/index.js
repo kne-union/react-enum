@@ -191,7 +191,7 @@ const EnumLegacy = p => {
       }}
       render={({ data, ...fetchApi }) => {
         if (typeof children === 'function') {
-          return children(data, fetchApi);
+          return children(Array.isArray(moduleName) ? data : data[0], fetchApi);
         }
         return children || data;
       }}
@@ -200,7 +200,7 @@ const EnumLegacy = p => {
 };
 
 const Enum = p => {
-  const { requests, children, ...props } = Object.assign(
+  const { request, children, ...props } = Object.assign(
     {},
     {
       format: 'default'
@@ -215,10 +215,10 @@ const Enum = p => {
         const { requests, format } = Object.assign({}, data);
         return loader({ requests, format });
       }}
-      data={{ requests }}
+      data={{ requests: Array.isArray(request) ? request : [request] }}
       render={({ data, ...fetchApi }) => {
         if (typeof children === 'function') {
-          return children(data, fetchApi);
+          return children(Array.isArray(request) ? data : data[0], fetchApi);
         }
         return children || data.join(',');
       }}

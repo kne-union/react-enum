@@ -37,7 +37,7 @@ const BaseExample = createWithRemoteLoader({
     }}</Enum>
     <Divider />
     <Enum moduleName="confirm" name="Y" />
-    <Enum moduleName="confirm" name="N" />
+    <Enum moduleName="confirm" name="N">{(data) => data.description}</Enum>
   </PureGlobal>;
 });
 
