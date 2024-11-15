@@ -33,9 +33,17 @@ npm i --save @kne/react-enum
 - _ReactEnum(@kne/current-lib_react-enum)[import * as _ReactEnum from "@kne/react-enum"],antd(antd),remoteLoader(@kne/remote-loader)
 
 ```jsx
-const { default: Enum } = _ReactEnum;
+const { default: Enum, preset } = _ReactEnum;
 const { createWithRemoteLoader } = remoteLoader;
-const {Divider} = antd;
+const { Divider } = antd;
+
+preset({
+  base: {
+    confirm: () => [{ description: '是', value: 'Y' }, {
+      description: '否', value: 'N'
+    }]
+  }
+});
 
 const BaseExample = createWithRemoteLoader({
   modules: ['components-core:Global@PureGlobal']
@@ -62,6 +70,9 @@ const BaseExample = createWithRemoteLoader({
         <div>{marital.map((data) => `${data.value}:${data.description}`).join(',')}</div>
       </div>;
     }}</Enum>
+    <Divider />
+    <Enum moduleName="confirm" name="Y" />
+    <Enum moduleName="confirm" name="N" />
   </PureGlobal>;
 });
 

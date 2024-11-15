@@ -1,5 +1,5 @@
 import { LRUCache } from 'lru-cache';
-import merge from 'lodash';
+import merge from 'lodash/merge';
 
 export const globalParams = {
   base: {},
