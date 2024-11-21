@@ -19,7 +19,7 @@ const formatEnum = ({ value, format, language }) => {
 };
 
 const useEnumResource = () => {
-  const { enums } = usePreset();
+  const { enums, locale, language } = usePreset();
   return useRefCallback(async ({ moduleNames }) => {
     const getResource = async target => {
       const loader = Object.assign({}, globalParams.base, enums)[target];
@@ -28,7 +28,8 @@ const useEnumResource = () => {
         return null;
       }
 
-      const resource = await (typeof loader === 'function' ? loader({ target }) : loader);
+      //locale参数可能被废弃
+      const resource = await (typeof loader === 'function' ? loader({ target, locale, language }) : loader);
 
       if (Array.isArray(resource)) {
         return new Map(resource.map(item => [item.value.toString(), item]));
