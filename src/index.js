@@ -7,8 +7,8 @@ import uniq from 'lodash/uniq';
 import transform from 'lodash/transform';
 import preset, { globalParams, getCache } from './preset';
 
-const formatEnum = ({ value, format, language }) => {
-  const label = value.locale?.[language] || value.description;
+const formatEnum = ({ value, format, language, locale }) => {
+  const label = value.translation?.[language || locale] || value.description;
   if (format === 'origin') {
     return value;
   }
@@ -19,7 +19,7 @@ const formatEnum = ({ value, format, language }) => {
 };
 
 const useEnumResource = () => {
-  const { enums } = usePreset();
+  const { enums, locale, language } = usePreset();
   return useRefCallback(async ({ moduleNames }) => {
     const getResource = async target => {
       const loader = Object.assign({}, globalParams.base, enums)[target];
@@ -28,7 +28,8 @@ const useEnumResource = () => {
         return null;
       }
 
-      const resource = await (typeof loader === 'function' ? loader({ target }) : loader);
+      //locale参数可能被废弃
+      const resource = await (typeof loader === 'function' ? loader({ target, locale, language }) : loader);
 
       if (Array.isArray(resource)) {
         return new Map(resource.map(item => [item.value.toString(), item]));
@@ -43,7 +44,7 @@ const useEnumResource = () => {
 };
 
 const useEnumLoader = () => {
-  const { language } = usePreset();
+  const { language, locale } = usePreset();
   const resource = useEnumResource();
   return useRefCallback(async ({ requests, format }) => {
     const cache = getCache();
@@ -83,7 +84,7 @@ const useEnumLoader = () => {
         }
         const currentResource = resourceObject[request.moduleName];
         const enumValue = currentResource.get(request.value);
-        const formatValue = formatEnum({ value: enumValue, format: request.format || format, language });
+        const formatValue = formatEnum({ value: enumValue, format: request.format || format, language, locale });
         cache.set(getCacheKey(request), formatValue);
         return formatValue;
       })(request);
@@ -115,7 +116,7 @@ const EnumResource = p => {
     p
   );
   const resource = useEnumResource();
-  const { language } = usePreset();
+  const { language, locale } = usePreset();
   return (
     <Fetch
       {...props}
@@ -135,7 +136,8 @@ const EnumResource = p => {
                     formatEnum({
                       value,
                       format,
-                      language
+                      language,
+                      locale
                     })
                   )
                 )
@@ -143,7 +145,8 @@ const EnumResource = p => {
                   formatEnum({
                     value,
                     format,
-                    language
+                    language,
+                    locale
                   })
                 )
           );
