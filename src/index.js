@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePreset } from '@kne/global-context';
+import { useGlobalContext, usePreset } from '@kne/global-context';
 import useRefCallback from '@kne/use-ref-callback';
 import Fetch, { useFetch } from '@kne/react-fetch';
 import groupBy from 'lodash/groupBy';
@@ -19,7 +19,8 @@ const formatEnum = ({ value, format, language, locale }) => {
 };
 
 const useEnumResource = () => {
-  const { enums, locale, language } = usePreset();
+  const { locale, language } = useGlobalContext();
+  const { enums } = usePreset();
   return useRefCallback(async ({ moduleNames }) => {
     const getResource = async target => {
       const loader = Object.assign({}, globalParams.base, enums)[target];
@@ -44,7 +45,7 @@ const useEnumResource = () => {
 };
 
 const useEnumLoader = () => {
-  const { language, locale } = usePreset();
+  const { language, locale } = useGlobalContext();
   const resource = useEnumResource();
   return useRefCallback(async ({ requests, format }) => {
     const cache = getCache();
@@ -116,7 +117,7 @@ const EnumResource = p => {
     p
   );
   const resource = useEnumResource();
-  const { language, locale } = usePreset();
+  const { language, locale } = useGlobalContext();
   return (
     <Fetch
       {...props}
