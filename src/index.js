@@ -6,6 +6,7 @@ import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import transform from 'lodash/transform';
 import preset, { globalParams, getCache } from './preset';
+import { isEmpty } from '@kne/is-empty';
 
 const formatEnum = ({ value, format, language, locale }) => {
   const label = value.translation?.[language || locale] || value.description;
@@ -19,9 +20,8 @@ const formatEnum = ({ value, format, language, locale }) => {
 };
 
 const useEnumResource = () => {
-  const { locale, language } = useGlobalContext();
   const { enums } = usePreset();
-  return useRefCallback(async ({ moduleNames }) => {
+  return useRefCallback(async ({ moduleNames, language }) => {
     const getResource = async target => {
       const loader = Object.assign({}, globalParams.base, enums)[target];
       if (!loader) {
@@ -30,7 +30,7 @@ const useEnumResource = () => {
       }
 
       //locale参数可能被废弃
-      const resource = await (typeof loader === 'function' ? loader({ target, locale, language }) : loader);
+      const resource = await (typeof loader === 'function' ? loader({ target, language, locale: language }) : loader);
 
       if (Array.isArray(resource)) {
         return new Map(resource.map(item => [item.value.toString(), item]));
@@ -45,12 +45,11 @@ const useEnumResource = () => {
 };
 
 const useEnumLoader = () => {
-  const { language, locale } = useGlobalContext();
   const resource = useEnumResource();
-  return useRefCallback(async ({ requests, format }) => {
+  return useRefCallback(async ({ requests, format, language }) => {
     const cache = getCache();
     const getCacheKey = request => {
-      return Symbol.for(`${request.moduleName}_${request.value}_${request.format || format}`);
+      return Symbol.for(`${request.moduleName}_${request.value}_${language}_${request.format || format}`);
     };
     const requestsGroup = groupBy(requests, request => {
       return !request.force && cache.has(getCacheKey(request)) ? 'cached' : 'uncached';
@@ -64,7 +63,7 @@ const useEnumLoader = () => {
     const moduleNames = uniq(uncached.map(({ moduleName }) => moduleName));
 
     const resourceObject = transform(
-      await resource({ moduleNames }),
+      await resource({ moduleNames, language }),
       (result, value, index) => {
         const moduleName = moduleNames[index];
         result[moduleName] = value;
@@ -85,7 +84,7 @@ const useEnumLoader = () => {
         }
         const currentResource = resourceObject[request.moduleName];
         const enumValue = currentResource.get(request.value);
-        const formatValue = formatEnum({ value: enumValue, format: request.format || format, language, locale });
+        const formatValue = formatEnum({ value: enumValue, format: request.format || format, language });
         cache.set(getCacheKey(request), formatValue);
         return formatValue;
       })(request);
@@ -95,16 +94,6 @@ const useEnumLoader = () => {
     });
 
     return results;
-  });
-};
-
-const useEnum = () => {
-  const loader = useEnumLoader();
-  return useFetch({
-    loader: ({ data }) => {
-      const { requests, format } = Object.assign({}, { format: 'default' }, data);
-      return loader({ requests, format });
-    }
   });
 };
 
@@ -166,9 +155,10 @@ const EnumLegacy = p => {
     },
     p
   );
+  const { language, locale } = useGlobalContext();
   const loader = useEnumLoader();
 
-  if (!name) {
+  if (isEmpty(name)) {
     return (
       <EnumResource moduleName={moduleName} format={format || 'origin'}>
         {children}
@@ -180,8 +170,8 @@ const EnumLegacy = p => {
     <Fetch
       {...props}
       loader={({ data }) => {
-        const { requests, format } = Object.assign({}, data);
-        return loader({ requests, format });
+        const { requests, language, format } = Object.assign({}, data);
+        return loader({ requests, language, format });
       }}
       data={{
         requests: [
@@ -191,7 +181,8 @@ const EnumLegacy = p => {
             force,
             format: typeof children === 'function' ? 'origin' : format || 'default'
           }
-        ]
+        ],
+        language: language || locale || window.navigator.language
       }}
       render={({ data, ...fetchApi }) => {
         if (typeof children === 'function') {
@@ -211,15 +202,19 @@ const Enum = p => {
     },
     p
   );
+  const { language, locale } = useGlobalContext();
   const loader = useEnumLoader();
   return (
     <Fetch
       {...props}
       loader={({ data }) => {
-        const { requests, format } = Object.assign({}, data);
-        return loader({ requests, format });
+        const { requests, format, language } = Object.assign({}, data);
+        return loader({ requests, language, format });
       }}
-      data={{ requests: Array.isArray(request) ? request : [request] }}
+      data={{
+        requests: Array.isArray(request) ? request : [request],
+        language: language || locale || window.navigator.language
+      }}
       render={({ data, ...fetchApi }) => {
         if (typeof children === 'function') {
           return children(Array.isArray(request) ? data : data[0], fetchApi);
@@ -232,4 +227,4 @@ const Enum = p => {
 
 export default EnumLegacy;
 
-export { preset, Enum, EnumResource, useEnum, useEnumLoader, useEnumResource };
+export { preset, Enum, EnumResource, useEnumLoader, useEnumResource };
