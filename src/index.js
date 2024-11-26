@@ -118,7 +118,10 @@ const EnumResource = p => {
       }}
       loader={({ data }) => {
         const { moduleName } = Object.assign({}, data);
-        return resource({ moduleNames: Array.isArray(moduleName) ? moduleName : [moduleName] });
+        return resource({
+          moduleNames: Array.isArray(moduleName) ? moduleName : [moduleName],
+          language: language || locale
+        });
       }}
       render={({ data }) => {
         if (typeof children === 'function') {
