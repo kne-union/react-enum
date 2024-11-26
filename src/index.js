@@ -9,6 +9,9 @@ import preset, { globalParams, getCache } from './preset';
 import { isEmpty } from '@kne/is-empty';
 
 const formatEnum = ({ value, format, language, locale }) => {
+  if (!value) {
+    return '';
+  }
   const label = value.translation?.[language || locale] || value.description;
   if (format === 'origin') {
     return value;
@@ -85,7 +88,7 @@ const useEnumLoader = () => {
         const currentResource = resourceObject[request.moduleName];
         const enumValue = currentResource.get(request.value);
         const formatValue = formatEnum({ value: enumValue, format: request.format || format, language });
-        cache.set(getCacheKey(request), formatValue);
+        formatValue && cache.set(getCacheKey(request), formatValue);
         return formatValue;
       })(request);
 
