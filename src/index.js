@@ -36,7 +36,7 @@ const useEnumResource = () => {
       const resource = await (typeof loader === 'function' ? loader({ target, language, locale: language }) : loader);
 
       if (Array.isArray(resource)) {
-        return new Map(resource.map(item => [item.value.toString(), item]));
+        return new Map(resource.map(item => [item.value, item]));
       }
       if (resource instanceof Map) {
         return resource;
