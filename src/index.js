@@ -36,7 +36,7 @@ const useEnumResource = () => {
       const resource = await (typeof loader === 'function' ? loader({ target, language, locale: language }) : loader);
 
       if (Array.isArray(resource)) {
-        return new Map(resource.map(item => [item.value, item]));
+        return new Map(resource.map(item => [String(item.value), item]));
       }
       if (resource instanceof Map) {
         return resource;
@@ -86,7 +86,7 @@ const useEnumLoader = () => {
           return cache.get(getCacheKey(request));
         }
         const currentResource = resourceObject[request.moduleName];
-        const enumValue = currentResource.get(request.value);
+        const enumValue = currentResource.get(String(request.value));
         const formatValue = formatEnum({ value: enumValue, format: request.format || format, language });
         formatValue && cache.set(getCacheKey(request), formatValue);
         return formatValue;
