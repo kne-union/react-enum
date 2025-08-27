@@ -20,6 +20,110 @@
           "packageName": "@kne/remote-loader"
         }
       ]
+    },
+    {
+      "title": "基础用法",
+      "description": "展示枚举的基本使用，包括获取单个枚举值和枚举列表",
+      "code": "./new-enum.js",
+      "scope": [
+        {
+          "name": "_Enum",
+          "packageName": "@kne/current-lib_react-enum",
+          "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    },
+    {
+      "title": "异步加载与缓存",
+      "description": "展示异步加载枚举数据、Loading状态和强制刷新缓存",
+      "code": "./async-enum.js",
+      "scope": [
+        {
+          "name": "_Enum",
+          "packageName": "@kne/current-lib_react-enum",
+          "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        },
+        {
+          "name": "React",
+          "packageName": "react"
+        }
+      ]
+    },
+    {
+      "title": "格式化方式",
+      "description": "展示不同的格式化方式和自定义渲染",
+      "code": "./format-enum.js",
+      "scope": [
+        {
+          "name": "_Enum",
+          "packageName": "@kne/current-lib_react-enum",
+          "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    },
+    {
+      "title": "渲染枚举列表",
+      "description": "将枚举列表渲染为各种表单组件",
+      "code": "./list-enum.js",
+      "scope": [
+        {
+          "name": "_Enum",
+          "packageName": "@kne/current-lib_react-enum",
+          "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
+    },
+    {
+      "title": "多枚举模块",
+      "description": "同时获取多个枚举模块和错误处理",
+      "code": "./multi-enum.js",
+      "scope": [
+        {
+          "name": "_Enum",
+          "packageName": "@kne/current-lib_react-enum",
+          "importStatement": "import * as _ReactEnum from \"@kne/react-enum\""
+        },
+        {
+          "name": "antd",
+          "packageName": "antd"
+        },
+        {
+          "name": "remoteLoader",
+          "packageName": "@kne/remote-loader"
+        }
+      ]
     }
   ]
 }
