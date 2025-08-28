@@ -212,7 +212,7 @@ render(<BaseExample />);
 
 - 异步加载与缓存
 - 展示异步加载枚举数据、Loading状态和强制刷新缓存
-- _Enum(@kne/current-lib_react-enum)[import * as _ReactEnum from "@kne/react-enum"],antd(antd),remoteLoader(@kne/remote-loader),React(react)
+- _Enum(@kne/current-lib_react-enum)[import * as _ReactEnum from "@kne/react-enum"],antd(antd),remoteLoader(@kne/remote-loader)
 
 ```jsx
 const { default: Enum } = _Enum;
@@ -360,9 +360,11 @@ const FormatEnumExample = createWithRemoteLoader({
             <div>
               <strong>选项格式（format="option"）：</strong>
               <Enum moduleName="orderStatus" name="paid" format="option">
-                {(data) => (
-                  <span>label: {data.label}, value: {data.value}</span>
-                )}
+                {(data) => {
+                  return (
+                    <span>label: {data.description}, value: {data.value}</span>
+                  )
+                }}
               </Enum>
             </div>
           </Space>

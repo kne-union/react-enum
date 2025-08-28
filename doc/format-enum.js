@@ -45,9 +45,11 @@ const FormatEnumExample = createWithRemoteLoader({
             <div>
               <strong>选项格式（format="option"）：</strong>
               <Enum moduleName="orderStatus" name="paid" format="option">
-                {(data) => (
-                  <span>label: {data.label}, value: {data.value}</span>
-                )}
+                {(data) => {
+                  return (
+                    <span>label: {data.description}, value: {data.value}</span>
+                  )
+                }}
               </Enum>
             </div>
           </Space>
