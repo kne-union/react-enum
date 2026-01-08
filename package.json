@@ -1,6 +1,6 @@
 {
   "name": "@kne/react-enum",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "管理和获取枚举值.",
   "syntax": {
     "esmodules": true

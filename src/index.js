@@ -49,7 +49,7 @@ const useEnumResource = () => {
 
 const useEnumLoader = () => {
   const resource = useEnumResource();
-  return useRefCallback(async ({ requests, format, language }) => {
+  return useRefCallback(async ({ requests, format, language, placeholder }) => {
     const cache = getCache();
     const getCacheKey = request => {
       return Symbol.for(`${request.moduleName}_${request.value}_${language}_${request.format || format}`);
@@ -73,20 +73,24 @@ const useEnumLoader = () => {
       },
       {}
     );
-
     cached.forEach(request => {
       const formatValue = cache.get(getCacheKey(request));
       const index = requests.indexOf(request);
       results[index] = formatValue;
     });
-
     uncached.forEach(request => {
       const formatValue = (request => {
         if (cache.has(getCacheKey(request))) {
           return cache.get(getCacheKey(request));
         }
         const currentResource = resourceObject[request.moduleName];
+        if (!currentResource) {
+          return placeholder;
+        }
         const enumValue = currentResource.get(String(request.value));
+        if (!enumValue) {
+          return placeholder;
+        }
         const formatValue = formatEnum({ value: enumValue, format: request.format || format, language });
         formatValue && cache.set(getCacheKey(request), formatValue);
         return formatValue;
@@ -154,7 +158,7 @@ const EnumResource = p => {
 };
 
 const EnumLegacy = p => {
-  const { moduleName, name, format, force, children, ...props } = Object.assign(
+  const { moduleName, name, format, force, children, placeholder, ...props } = Object.assign(
     {},
     {
       force: false
@@ -177,7 +181,7 @@ const EnumLegacy = p => {
       {...props}
       loader={({ data }) => {
         const { requests, language, format } = Object.assign({}, data);
-        return loader({ requests, language, format });
+        return loader({ requests, language, format, placeholder });
       }}
       data={{
         requests: [
@@ -191,17 +195,18 @@ const EnumLegacy = p => {
         language: language || locale || window.navigator.language
       }}
       render={({ data, ...fetchApi }) => {
+        const output = Array.isArray(moduleName) ? data : data[0];
         if (typeof children === 'function') {
-          return children(Array.isArray(moduleName) ? data : data[0], fetchApi);
+          return children(output, fetchApi);
         }
-        return children || data;
+        return children || output;
       }}
     />
   );
 };
 
 const Enum = p => {
-  const { request, children, ...props } = Object.assign(
+  const { request, children, placeholder, ...props } = Object.assign(
     {},
     {
       format: 'default'
@@ -215,7 +220,7 @@ const Enum = p => {
       {...props}
       loader={({ data }) => {
         const { requests, format, language } = Object.assign({}, data);
-        return loader({ requests, language, format });
+        return loader({ requests, language, format, placeholder });
       }}
       data={{
         requests: Array.isArray(request) ? request : [request],
