@@ -1,6 +1,6 @@
 {
   "name": "@kne/react-enum",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "管理和获取枚举值.",
   "syntax": {
     "esmodules": true
@@ -89,6 +89,6 @@
     "@kne/react-fetch": "^1.5.5",
     "@kne/use-ref-callback": "^0.1.2",
     "lodash": "^4.17.21",
-    "lru-cache": "^11.0.2"
+    "lru-cache": "11.2.4"
   }
 }
