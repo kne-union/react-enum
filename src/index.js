@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGlobalContext, usePreset } from '@kne/global-context';
+import { useGlobalValue, usePreset } from '@kne/global-context';
 import useRefCallback from '@kne/use-ref-callback';
 import Fetch, { useFetch } from '@kne/react-fetch';
 import groupBy from 'lodash/groupBy';
@@ -113,7 +113,7 @@ const EnumResource = p => {
     p
   );
   const resource = useEnumResource();
-  const { language, locale } = useGlobalContext();
+  const locale = useGlobalValue('locale');
   return (
     <Fetch
       {...props}
@@ -124,7 +124,7 @@ const EnumResource = p => {
         const { moduleName } = Object.assign({}, data);
         return resource({
           moduleNames: Array.isArray(moduleName) ? moduleName : [moduleName],
-          language: language || locale
+          language: locale
         });
       }}
       render={({ data }) => {
@@ -136,7 +136,7 @@ const EnumResource = p => {
                     formatEnum({
                       value,
                       format,
-                      language,
+                      language: locale,
                       locale
                     })
                   )
@@ -145,7 +145,7 @@ const EnumResource = p => {
                   formatEnum({
                     value,
                     format,
-                    language,
+                    language: locale,
                     locale
                   })
                 )
@@ -165,7 +165,7 @@ const EnumLegacy = p => {
     },
     p
   );
-  const { language, locale } = useGlobalContext();
+  const locale = useGlobalValue('locale');
   const loader = useEnumLoader();
 
   if (isEmpty(name)) {
@@ -192,7 +192,7 @@ const EnumLegacy = p => {
             format: typeof children === 'function' ? 'origin' : format || 'default'
           }
         ],
-        language: language || locale || window.navigator.language
+        language: locale || window.navigator.language
       }}
       render={({ data, ...fetchApi }) => {
         const output = Array.isArray(moduleName) ? data : data[0];
@@ -213,7 +213,7 @@ const Enum = p => {
     },
     p
   );
-  const { language, locale } = useGlobalContext();
+  const locale = useGlobalValue('locale');
   const loader = useEnumLoader();
   return (
     <Fetch
@@ -224,7 +224,7 @@ const Enum = p => {
       }}
       data={{
         requests: Array.isArray(request) ? request : [request],
-        language: language || locale || window.navigator.language
+        language: locale || window.navigator.language
       }}
       render={({ data, ...fetchApi }) => {
         if (typeof children === 'function') {
