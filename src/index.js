@@ -118,7 +118,8 @@ const EnumResource = p => {
     <Fetch
       {...props}
       data={{
-        moduleName
+        moduleName,
+        language: locale
       }}
       loader={({ data }) => {
         const { moduleName } = Object.assign({}, data);
